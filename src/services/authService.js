@@ -53,7 +53,7 @@ function saveNewUser(req, res) {
 }
 
 function loginUser(req, res) {
-    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.CONTROLLER} - loginUser`);
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - loginUser`);
     return new Promise((resolve, reject) => {
         var email = req.body.email;
         var password = req.body.password;
@@ -61,12 +61,12 @@ function loginUser(req, res) {
         registerModel.find({ email })
             .then(data => {
                 if (data.length == 0) {
-                    logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - loginUser`);  
+                    logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - loginUser`);  
                     reject(responseGenrator(resConst.BAD_REQUEST, resConst.INVALID_CREDENTIALS, null, resConst.ERROR_MSG));
                 } else {
                     bcrypt.compare(password, data[0].password, (err, result) => {
                         if (err || !result) {
-                            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - loginUser`);  
+                            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - loginUser`);  
                             reject(responseGenrator(resConst.BAD_REQUEST, resConst.INVALID_CREDENTIALS, null, resConst.ERROR_MSG));
                         }
                         var token = jwt.sign({ id: data[0]._id, roleId: data[0].roleId }, process.env.BCYPT_CREDENTIAL, { expiresIn: '60d' });
@@ -76,13 +76,14 @@ function loginUser(req, res) {
                             token : token,
                             roleId: data[0].roleId
                         }
-                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.CONTROLLER} - loginUser`);
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - loginUser`);
                         resolve(responseGenrator(resConst.OK, null, userData, resConst.SUCCESS_MSG));
                     });
                 }
             })
             .catch((err) => {
-                logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - loginUser`);  
+                console.log("err ",err);
+                logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - loginUser`);  
                 reject(responseGenrator(resConst.SERVER_ERROR, resConst.SERVER_ERROR_MSG, null, resConst.ERROR_MSG));
             });
     })
