@@ -8,7 +8,7 @@ const figlet = require('figlet');
 require('dotenv').config();
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000','https://keyur5123-upgraded-space-goggles-rqgr5v6wr9hwp67-3000.preview.app.github.dev'],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }))
 
