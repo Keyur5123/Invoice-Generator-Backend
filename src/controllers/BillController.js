@@ -3,7 +3,8 @@ const { responseGenrator, resConst, logger } = require('../utilities/utility-fun
 
 module.exports = {
     saveNewInvoice: saveNewInvoice,
-    getAllInvoiceDetails: getAllInvoiceDetails
+    getAllInvoiceDetails: getAllInvoiceDetails,
+    getAllPartyFermList: getAllPartyFermList
 }
 
 function saveNewInvoice(req, res) {
@@ -28,6 +29,19 @@ function getAllInvoiceDetails(req, res) {
         })
         .catch(err => {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllInvoiceDetails`);
+            res.status(err.status).json({ err })
+        })
+}
+
+function getAllPartyFermList(req, res) {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermList`);
+    BillService.getAllPartyFermList(req, res)
+        .then(data => {
+            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermList`);
+            res.status(data.status).json({ data })
+        })
+        .catch(err => {
+            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermList`);
             res.status(err.status).json({ err })
         })
 }

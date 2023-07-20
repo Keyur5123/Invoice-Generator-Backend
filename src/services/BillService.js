@@ -1,12 +1,14 @@
 const Products = require("../model/products");
 const BillItems = require("../model/billItems");
 const allInvoices = require("../model/addNewInvoice");
+const partyFerm = require("../model/partyFerm");
 const { responseGenrator, logger, resConst } = require("../utilities/utility-functions");
 const mongoose = require("mongoose");
 
 module.exports = {
     saveNewInvoice: saveNewInvoice,
-    getAllInvoiceDetails: getAllInvoiceDetails
+    getAllInvoiceDetails: getAllInvoiceDetails,
+    getAllPartyFermList: getAllPartyFermList
 }
 
 function saveNewInvoice(req, res) {
@@ -166,5 +168,23 @@ function getAllInvoiceDetails(req, res) {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllInvoiceDetails`);
             reject(responseGenrator(resConst.BAD_REQUEST, error.toString(), null, resConst.ERROR_MSG));
         }
+    })
+}
+
+function getAllPartyFermList() {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermList`);
+
+    return new Promise(async (resolve, reject) => {
+        await partyFerm.find()
+            .then(partyName => {
+                logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermList`);
+                console.log("partyName :- ",partyName)
+                resolve(responseGenrator(resConst.OK, null, partyName, resConst.OK_MSG))
+            })
+            .catch(err => {
+                logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermList`);
+                reject(responseGenrator(resConst.BAD_REQUEST, err, null, resConst.ERROR_MSG))
+            });
+
     })
 }
