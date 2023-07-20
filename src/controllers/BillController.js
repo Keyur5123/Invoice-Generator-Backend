@@ -4,7 +4,7 @@ const { responseGenrator, resConst, logger } = require('../utilities/utility-fun
 module.exports = {
     saveNewInvoice: saveNewInvoice,
     getAllInvoiceDetails: getAllInvoiceDetails,
-    getAllPartyFermList: getAllPartyFermList
+    getAllPartyFermAndProductsList: getAllPartyFermAndProductsList
 }
 
 function saveNewInvoice(req, res) {
@@ -33,15 +33,15 @@ function getAllInvoiceDetails(req, res) {
         })
 }
 
-function getAllPartyFermList(req, res) {
-    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermList`);
-    BillService.getAllPartyFermList(req, res)
+function getAllPartyFermAndProductsList(req, res) {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermAndProductsList`);
+    BillService.getAllPartyFermAndProductsList(req, res)
         .then(data => {
-            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermList`);
+            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermAndProductsList`);
             res.status(data.status).json({ data })
         })
         .catch(err => {
-            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermList`);
+            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermAndProductsList`);
             res.status(err.status).json({ err })
         })
 }

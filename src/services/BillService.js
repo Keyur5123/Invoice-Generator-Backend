@@ -1,4 +1,4 @@
-const Products = require("../model/products");
+const products = require("../model/products");
 const BillItems = require("../model/billItems");
 const allInvoices = require("../model/addNewInvoice");
 const partyFerm = require("../model/partyFerm");
@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 module.exports = {
     saveNewInvoice: saveNewInvoice,
     getAllInvoiceDetails: getAllInvoiceDetails,
-    getAllPartyFermList: getAllPartyFermList
+    getAllPartyFermAndProductsList: getAllPartyFermAndProductsList
 }
 
 function saveNewInvoice(req, res) {
@@ -16,9 +16,9 @@ function saveNewInvoice(req, res) {
     return new Promise(async (resolve, reject) => {
         new Promise(async (resolve, reject) => {
             let billItems = await Promise.all(req.body.obj.billItems.map(async (billItem) => {
-                let productId = await Products.find({ name: billItem.description });
+                let productId = await products.find({ name: billItem.description });
                 if (productId.length == 0) {
-                    let addProduct = new Products({
+                    let addProduct = new products({
                         name: billItem.description,
                         rate: billItem.rate
                     })
@@ -171,20 +171,29 @@ function getAllInvoiceDetails(req, res) {
     })
 }
 
-function getAllPartyFermList() {
-    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermList`);
+function getAllPartyFermAndProductsList() {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
 
     return new Promise(async (resolve, reject) => {
-        await partyFerm.find()
-            .then(partyName => {
-                logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermList`);
-                console.log("partyName :- ",partyName)
-                resolve(responseGenrator(resConst.OK, null, partyName, resConst.OK_MSG))
-            })
-            .catch(err => {
-                logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermList`);
-                reject(responseGenrator(resConst.BAD_REQUEST, err, null, resConst.ERROR_MSG))
-            });
 
+        let [partyNameList, ProductsList] = await Promise.all(
+            [
+                partyFerm.find().catch(err => {
+                    logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
+                    reject(responseGenrator(resConst.BAD_REQUEST, err, null, resConst.ERROR_MSG))
+                }),
+                products.find().catch(err => {
+                    logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
+                    reject(responseGenrator(resConst.BAD_REQUEST, err, null, resConst.ERROR_MSG))
+                })
+            ]);
+
+        let partyNameAndProductsList = {
+            partyNameList: partyNameList,
+            ProductsList: ProductsList
+        }
+
+        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
+        resolve(responseGenrator(resConst.OK, null, partyNameAndProductsList, resConst.OK_MSG))
     })
 }
