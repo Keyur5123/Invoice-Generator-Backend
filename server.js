@@ -3,6 +3,7 @@ const app = express();
 const conn = require('./src/services/common-services/dbConnection');
 const billRoute = require("./src/routes/billRoute");
 const authRoute = require("./src/routes/authRoute");
+const productAndPartyRoute = require("./src/routes/productAndPartyRoute");
 const cors = require('cors');
 const figlet = require('figlet');
 require('dotenv').config();
@@ -14,17 +15,19 @@ app.use(cors({
 
 app.use(express.json())
 
-app.use('/darshan-creation', billRoute)
 app.use('/darshan-creation/auth', authRoute)
+app.use('/darshan-creation', billRoute)
+app.use('/darshan-creation/product-and-party', productAndPartyRoute)
 
 app.listen(process.env.PORT, () => {
-    figlet.text(`D A R S H A N C R E A T I O N  !`, { horizontalLayout: 'default', verticalLayout: 'default', width: 120, whitespaceBreak: true }, function (err, data) {
+    figlet.text(`D A R S H A N \nC R E A T I O N  !`, { horizontalLayout: 'default', verticalLayout: 'default', width: 120, whitespaceBreak: true }, function (err, data) {
         if (err) {
             console.log('Something went wrong...');
             console.dir(err);
             return;
         }
-
+        
+        console.log(data);
         console.log(`Server is running on http://${process.env.HOST}:${process.env.PORT}.`);
         console.log(`-----------------------------------------------------------------------------------`);
         console.log(`Start Time  : ` + (new Date()).toUTCString());

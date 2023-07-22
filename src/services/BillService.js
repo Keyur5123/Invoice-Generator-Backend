@@ -7,8 +7,7 @@ const mongoose = require("mongoose");
 
 module.exports = {
     saveNewInvoice: saveNewInvoice,
-    getAllInvoiceDetails: getAllInvoiceDetails,
-    getAllPartyFermAndProductsList: getAllPartyFermAndProductsList
+    getAllInvoiceDetails: getAllInvoiceDetails
 }
 
 function saveNewInvoice(req, res) {
@@ -91,7 +90,6 @@ function getAllInvoiceDetails(req, res) {
     logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - getAllInvoiceDetails`);
     return new Promise(async (resolve, reject) => {
         try {
-
             let pipeline = [
                 {
                     $lookup: {
@@ -168,32 +166,5 @@ function getAllInvoiceDetails(req, res) {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllInvoiceDetails`);
             reject(responseGenrator(resConst.BAD_REQUEST, error.toString(), null, resConst.ERROR_MSG));
         }
-    })
-}
-
-function getAllPartyFermAndProductsList() {
-    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
-
-    return new Promise(async (resolve, reject) => {
-
-        let [partyNameList, ProductsList] = await Promise.all(
-            [
-                partyFerm.find().catch(err => {
-                    logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
-                    reject(responseGenrator(resConst.BAD_REQUEST, err, null, resConst.ERROR_MSG))
-                }),
-                products.find().catch(err => {
-                    logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
-                    reject(responseGenrator(resConst.BAD_REQUEST, err, null, resConst.ERROR_MSG))
-                })
-            ]);
-
-        let partyNameAndProductsList = {
-            partyNameList: partyNameList,
-            ProductsList: ProductsList
-        }
-
-        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
-        resolve(responseGenrator(resConst.OK, null, partyNameAndProductsList, resConst.OK_MSG))
     })
 }

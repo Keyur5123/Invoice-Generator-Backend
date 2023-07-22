@@ -1,10 +1,9 @@
 const BillService = require('../services/BillService');
-const { responseGenrator, resConst, logger } = require('../utilities/utility-functions');
+const { resConst, logger } = require('../utilities/utility-functions');
 
 module.exports = {
     saveNewInvoice: saveNewInvoice,
-    getAllInvoiceDetails: getAllInvoiceDetails,
-    getAllPartyFermAndProductsList: getAllPartyFermAndProductsList
+    getAllInvoiceDetails: getAllInvoiceDetails
 }
 
 function saveNewInvoice(req, res) {
@@ -29,19 +28,6 @@ function getAllInvoiceDetails(req, res) {
         })
         .catch(err => {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllInvoiceDetails`);
-            res.status(err.status).json({ err })
-        })
-}
-
-function getAllPartyFermAndProductsList(req, res) {
-    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermAndProductsList`);
-    BillService.getAllPartyFermAndProductsList(req, res)
-        .then(data => {
-            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermAndProductsList`);
-            res.status(data.status).json({ data })
-        })
-        .catch(err => {
-            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - getAllPartyFermAndProductsList`);
             res.status(err.status).json({ err })
         })
 }
