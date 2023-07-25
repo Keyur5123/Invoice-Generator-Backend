@@ -2,7 +2,7 @@ const ProductAndPartyService = require('../services/productAndPartyService');
 const { resConst, logger } = require('../utilities/utility-functions');
 
 module.exports = {
-    addNewProduct: addNewProduct,
+    upsertProductDetails: upsertProductDetails,
     addNewPartyFerm: addNewPartyFerm,
     getAllPartyFermAndProductsList: getAllPartyFermAndProductsList,
 }
@@ -20,15 +20,15 @@ function getAllPartyFermAndProductsList(req, res) {
         })
 }
 
-function addNewProduct(req,res) {
-    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.CONTROLLER} - addNewProduct`);
-    ProductAndPartyService.addNewProduct(req, res)
+function upsertProductDetails(req,res) {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.CONTROLLER} - upsertProductDetails`);
+    ProductAndPartyService.upsertProductDetails(req, res)
         .then(data => {
-            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.CONTROLLER} - addNewProduct`);
+            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.CONTROLLER} - upsertProductDetails`);
             res.status(data.status).json({ data })
         })
         .catch(err => {
-            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - addNewProduct`);
+            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.CONTROLLER} - upsertProductDetails`);
             res.status(err.status).json({ err })
         })
 }

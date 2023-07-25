@@ -22,7 +22,6 @@ module.exports = {
                 }
             });
         } catch (error) {
-            console.log("error :- ", error);
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.AUTHENTICATION} - verifyUserToken`);
             let response = responseGenrator(resConst.NOT_AUTHORIZED, resConst.NOT_AUTHORIZED_USER, undefined, resConst.ERROR_MSG);
             res.status(resConst.OK).json(response)
