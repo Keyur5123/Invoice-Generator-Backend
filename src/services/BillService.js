@@ -59,6 +59,7 @@ function saveNewInvoice(req, res) {
                     party_name: req.body.obj.party_name,
                     address: req.body.obj.address,
                     bill_no: req.body.obj.bill_no,
+                    date_created: req.body.obj.date_created,
                     billItems: itemId,
                     discount: req.body.obj.discount,
                     gst: req.body.obj.gst,
