@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const env_config = require('./env_config')
 const conn = require('./src/services/common-services/dbConnection');
 const billRoute = require("./src/routes/billRoute");
 const authRoute = require("./src/routes/authRoute");
@@ -31,7 +32,7 @@ app.listen(process.env.PORT, () => {
         console.log(`Server is running on http://${process.env.HOST}:${process.env.PORT}.`);
         console.log(`-----------------------------------------------------------------------------------`);
         console.log(`Start Time  : ` + (new Date()).toUTCString());
-        console.log(`Environment : ${process.env.NODE_ENV}`);
+        console.log(`Environment : ${process.env.ENVIRONMENT}`);
         console.log(`Port        : ${process.env.PORT}`);
         console.log(`-----------------------------------------------------------------------------------`);
     });
