@@ -9,5 +9,6 @@ mongoose.connect(process.env.DB_URL)
         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.DATABASE} - dbConnection`);
     })
     .catch((err) => {
+        console.log("err ",err);
         logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.DATABASE} - dbConnection`);
     })
