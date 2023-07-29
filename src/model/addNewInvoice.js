@@ -51,7 +51,7 @@ const newInvoiceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'userdatas'
     },
-    date_created: { type: Date, default: Date.now }
+    date_created: { type: String, default: Date.now }
 });
 
 const AllInvoices = mongoose.model("allinvoices", newInvoiceSchema);
