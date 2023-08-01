@@ -114,7 +114,8 @@ function addNewPartyFerm(req, res) {
             else {
                 let newPartyFerm = new partyFerm({
                     name: req.body.name,
-                    rate: req.body.rate
+                    address: req.body.address,
+                    gstNo: req.body.gstNo
                 })
 
                 newPartyFerm.save()

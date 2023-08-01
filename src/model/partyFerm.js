@@ -5,6 +5,14 @@ const partySchema = new mongoose.Schema({
         type: 'String',
         required: true
     },
+    address: {
+        type: 'String',
+        required: true
+    },
+    gstNo: {
+        type: Number,
+        required: true
+    }
 })
 
 const partyFerms = mongoose.model('PartyFerm',partySchema);

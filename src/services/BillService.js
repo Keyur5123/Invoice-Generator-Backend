@@ -73,7 +73,7 @@ function saveNewInvoice(req, res) {
                 let addInvoice = await newInvoice.save();
                 if (addInvoice) {
                     logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - saveNewInvoice`);
-                    resolve(responseGenrator(resConst.OK, null, 'Inovice Saved Successfully', resConst.OK_MSG))
+                    resolve(responseGenrator(resConst.OK, null, addInvoice._id, resConst.OK_MSG))
                 }
                 else {
                     logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - saveNewInvoice`);
