@@ -3,6 +3,7 @@ const app = express();
 const env_config = require('./env_config')
 const conn = require('./src/services/common-services/dbConnection');
 const billRoute = require("./src/routes/billRoute");
+const userRoute = require("./src/routes/userRoute");
 const authRoute = require("./src/routes/authRoute");
 const productAndPartyRoute = require("./src/routes/productAndPartyRoute");
 const cors = require('cors');
@@ -18,6 +19,7 @@ app.use(express.json())
 
 app.use('/darshan-creation/auth', authRoute)
 app.use('/darshan-creation', billRoute)
+app.use('/darshan-creation/users', userRoute)
 app.use('/darshan-creation/product-and-party', productAndPartyRoute)
 
 app.listen(process.env.PORT, () => {

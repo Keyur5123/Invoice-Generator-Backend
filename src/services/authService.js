@@ -1,4 +1,4 @@
-const registerModel = require('../model/registeration')
+const userData = require('../model/userData')
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const { responseGenrator, resConst, logger } = require('../utilities/utility-functions');
@@ -12,7 +12,7 @@ function saveNewUser(req, res) {
     logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - saveNewUser`);
     return new Promise(async (resolve, reject) => {
         const { user_name, email, password } = req.body
-        await registerModel.findOne({ email })
+        await userData.findOne({ email })
             .then(user => {
                 if (user) {
                     logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - saveNewUser`);
@@ -25,7 +25,7 @@ function saveNewUser(req, res) {
                         reject(responseGenrator(resConst.BAD_REQUEST, resConst.SOMETHING_WENT_WRONG, null, resConst.ERROR_MSG));
                     }
                     else {
-                        var userdata = new registerModel({
+                        var userdata = new userData({
                             user_name: user_name,
                             email: email,
                             password: pass,
@@ -47,7 +47,7 @@ function saveNewUser(req, res) {
             })
             .catch((err) => {
                 logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - saveNewUser`);
-                reject(responseGenrator(resConst.SERVER_ERROR, resConst.SERVER_ERROR_MSG, null, resConst.ERROR_MSG));
+                reject(responseGenrator(resConst.SERVER_ERROR, err.toString(), null, resConst.ERROR_MSG));
             });
     })
 }
@@ -58,7 +58,7 @@ function loginUser(req, res) {
         var email = req.body.email;
         var password = req.body.password;
 
-        registerModel.find({ email })
+        userData.find({ email })
             .then(data => {
                 if (data.length == 0) {
                     logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - loginUser`);  
