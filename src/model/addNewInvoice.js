@@ -23,7 +23,7 @@ const newInvoiceSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
-    gst: {
+    igst: {
         type: Number,
         required: true,
         default: 0

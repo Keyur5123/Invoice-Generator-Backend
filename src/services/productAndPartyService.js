@@ -3,9 +3,11 @@ const partyFerm = require("../model/partyFerm");
 const { responseGenrator, logger, resConst } = require("../utilities/utility-functions");
 
 module.exports = {
+    getAllPartyFermAndProductsList: getAllPartyFermAndProductsList,
     upsertProductDetails: upsertProductDetails,
     addNewPartyFerm: addNewPartyFerm,
-    getAllPartyFermAndProductsList: getAllPartyFermAndProductsList,
+    deleteProduct: deleteProduct,
+    deletePartyFerm: deletePartyFerm
 }
 
 function getAllPartyFermAndProductsList() {
@@ -114,7 +116,8 @@ function addNewPartyFerm(req, res) {
             else {
                 let newPartyFerm = new partyFerm({
                     name: req.body.name,
-                    rate: req.body.rate
+                    address: req.body.address,
+                    gstNo: req.body.gstNo
                 })
 
                 newPartyFerm.save()
@@ -128,6 +131,52 @@ function addNewPartyFerm(req, res) {
             }
         } catch (error) {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - addNewPartyFerm`);
+            reject(responseGenrator(resConst.BAD_REQUEST, error.toString(), null, resConst.ERROR_MSG));
+        }
+    })
+}
+
+function deleteProduct(req, res) {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            await products.findOneAndRemove({ _id: req.params.product_code })
+                .then(data => {
+                    if (data) {
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
+                        resolve(responseGenrator(resConst.OK, null, 'Product deleted successfully', resConst.OK_MSG))
+                    }
+                    else {
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
+                        resolve(responseGenrator(resConst.OK, null, 'Product not found', resConst.OK_MSG))
+                    }
+                });
+        } catch (error) {
+            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
+            reject(responseGenrator(resConst.BAD_REQUEST, error.toString(), null, resConst.ERROR_MSG));
+        }
+    })
+}
+
+function deletePartyFerm(req, res) {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - deletePartyFerm`);
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            await partyFerm.findOneAndRemove({ _id: req.params.party_code })
+                .then(data => {
+                    if (data) {
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deletePartyFerm`);
+                        resolve(responseGenrator(resConst.OK, null, 'Party deleted successfully', resConst.OK_MSG))
+                    }
+                    else {
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deletePartyFerm`);
+                        resolve(responseGenrator(resConst.OK, null, 'Party not found', resConst.OK_MSG))
+                    }
+                });
+        } catch (error) {
+            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - deletePartyFerm`);
             reject(responseGenrator(resConst.BAD_REQUEST, error.toString(), null, resConst.ERROR_MSG));
         }
     })
