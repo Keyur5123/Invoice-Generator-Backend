@@ -5,7 +5,7 @@ const { responseGenrator, logger, resConst } = require("../utilities/utility-fun
 module.exports = {
     getAllPartyFermAndProductsList: getAllPartyFermAndProductsList,
     upsertProductDetails: upsertProductDetails,
-    addNewPartyFerm: addNewPartyFerm,
+    upsertPartyFerm: upsertPartyFerm,
     deleteProduct: deleteProduct,
     deletePartyFerm: deletePartyFerm
 }
@@ -47,23 +47,24 @@ function upsertProductDetails(req, res) {
 
     return new Promise(async (resolve, reject) => {
         try {
+
             if (req?.body?.updateValue == true) {
                 Promise.all(req?.body?.productDetails.map(async (product) => {
                     return await products.updateMany({ name: product.name }, { $set: { rate: product.rate } }, { upsert: true, new: true })
                 }))
                     .then(res => {
-                        let newAddedProducts = [];
-                        let nonUpdatedProducts = [];
-                        res.forEach(product => {
-                            if (product.matchedCount == 1 && product.upsertedId == null) {
-                                nonUpdatedProducts(product);
-                            }
-                            else if (product.matchedCount == 0 && product.upsertedId != null) {
-                                newAddedProducts.push(product);
-                            }
-                        })
+                        // let newAddedProducts = [];
+                        // let nonUpdatedProducts = [];
+                        // res.forEach(product => {
+                        //     if (product.matchedCount == 1 && product.upsertedId == null) {
+                        //         nonUpdatedProducts.push(product);
+                        //     }
+                        //     else if (product.matchedCount == 0 && product.upsertedId != null) {
+                        //         newAddedProducts.push(product);
+                        //     }
+                        // })
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
-                        resolve(responseGenrator(resConst.OK, null, { newAddedProducts, nonUpdatedProducts }, resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, res, resConst.OK_MSG))
                     })
                     .catch(err => {
                         logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
@@ -73,27 +74,39 @@ function upsertProductDetails(req, res) {
             else {
                 let productName = req.body.productDetails?.name;
                 let productRate = req.body.productDetails?.rate;
+                let _id = req.body.productDetails?._id;
 
                 let isProductExist = await products.find({ name: productName });
 
-                if (isProductExist.length > 0) {
+                if (_id) {
+                    products.findOneAndUpdate({ _id: _id }, { $set: { name: productName, rate: productRate } }, { upsert: true, new: true })
+                        .then(data => {
+                            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
+                            resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
+                        }).catch(err => {
+                            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
+                            reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
+                        });
+                }
+                else if (isProductExist.length > 0) {
                     logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
                     reject(responseGenrator(resConst.BAD_REQUEST, `${productName.toUpperCase()} Product is already exist in database`, null, resConst.ERROR_MSG))
                 }
+                else {
+                    let newProduct = new products({
+                        name: productName,
+                        rate: productRate
+                    })
 
-                let newProduct = new products({
-                    name: productName,
-                    rate: productRate
-                })
-
-                newProduct.save()
-                    .then(data => {
-                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
-                        resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
-                    }).catch(err => {
-                        logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
-                        reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
-                    });
+                    newProduct.save()
+                        .then(data => {
+                            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
+                            resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
+                        }).catch(err => {
+                            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
+                            reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
+                        });
+                }
             }
         } catch (error) {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
@@ -102,15 +115,26 @@ function upsertProductDetails(req, res) {
     })
 }
 
-function addNewPartyFerm(req, res) {
-    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - addNewPartyFerm`);
+function upsertPartyFerm(req, res) {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
 
     return new Promise(async (resolve, reject) => {
         try {
             let isPartyFermExist = await partyFerm.find({ name: req.body.name });
+            let _id = req.body._id;
 
-            if (isPartyFermExist.length > 0) {
-                logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - addNewPartyFerm`);
+            if (isPartyFermExist.length > 0 && _id) {
+                partyFerm.findOneAndUpdate({ _id: _id }, { $set: { name: req.body.name, address: req.body.address, gstNo: req.body.gstNo } }, { upsert: true, new: true })
+                    .then(data => {
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
+                        resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
+                    }).catch(err => {
+                        logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
+                        reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
+                    });
+            }
+            else if (isPartyFermExist.length > 0) {
+                logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
                 reject(responseGenrator(resConst.BAD_REQUEST, `${req.body.name.toUpperCase()} Party Ferm is already exist in database`, null, resConst.ERROR_MSG))
             }
             else {
@@ -122,15 +146,15 @@ function addNewPartyFerm(req, res) {
 
                 newPartyFerm.save()
                     .then(data => {
-                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - addNewPartyFerm`);
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
                         resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
                     }).catch(err => {
-                        logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - addNewPartyFerm`);
+                        logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
                         reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
                     });
             }
         } catch (error) {
-            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - addNewPartyFerm`);
+            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
             reject(responseGenrator(resConst.BAD_REQUEST, error.toString(), null, resConst.ERROR_MSG));
         }
     })
