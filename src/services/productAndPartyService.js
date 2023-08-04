@@ -120,11 +120,10 @@ function upsertPartyFerm(req, res) {
 
     return new Promise(async (resolve, reject) => {
         try {
-            let isPartyFermExist = await partyFerm.find({ name: req.body.name });
             let _id = req.body._id;
-
-            if (isPartyFermExist.length > 0 && _id) {
-                partyFerm.findOneAndUpdate({ _id: _id }, { $set: { name: req.body.name, address: req.body.address, gstNo: req.body.gstNo } }, { upsert: true, new: true })
+            if (_id) {
+                console.log("isPartyFermExist.length > 0 && _id");
+                partyFerm.findOneAndUpdate({ _id: _id }, { $set: { name: req.body.name, address: req.body.address, gstNo: req.body.gstNo } }, { new: true })
                     .then(data => {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
                         resolve(responseGenrator(resConst.OK, null, resConst.PARTY_UPDATED_SUCCESSFUL, resConst.OK_MSG))
@@ -133,25 +132,30 @@ function upsertPartyFerm(req, res) {
                         reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
                     });
             }
-            else if (isPartyFermExist.length > 0) {
-                logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
-                reject(responseGenrator(resConst.BAD_REQUEST, `${req.body.name.toUpperCase()} Party Ferm is already exist in database`, null, resConst.ERROR_MSG))
-            }
             else {
-                let newPartyFerm = new partyFerm({
-                    name: req.body.name,
-                    address: req.body.address,
-                    gstNo: req.body.gstNo
-                })
+                let isPartyFermExist = await partyFerm.find({ name: req.body.name });
 
-                newPartyFerm.save()
-                    .then(data => {
-                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
-                        resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
-                    }).catch(err => {
-                        logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
-                        reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
-                    });
+                if (isPartyFermExist.length > 0) {
+                    logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
+                    reject(responseGenrator(resConst.BAD_REQUEST, `${req.body.name.toUpperCase()} Party Ferm is already exist in database`, null, resConst.ERROR_MSG))
+                }
+                else {
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>");
+                    let newPartyFerm = new partyFerm({
+                        name: req.body.name,
+                        address: req.body.address,
+                        gstNo: req.body.gstNo
+                    })
+
+                    newPartyFerm.save()
+                        .then(data => {
+                            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
+                            resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
+                        }).catch(err => {
+                            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
+                            reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
+                        });
+                }
             }
         } catch (error) {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
