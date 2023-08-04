@@ -122,7 +122,6 @@ function upsertPartyFerm(req, res) {
         try {
             let _id = req.body._id;
             if (_id) {
-                console.log("isPartyFermExist.length > 0 && _id");
                 partyFerm.findOneAndUpdate({ _id: _id }, { $set: { name: req.body.name, address: req.body.address, gstNo: req.body.gstNo } }, { new: true })
                     .then(data => {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
@@ -140,7 +139,6 @@ function upsertPartyFerm(req, res) {
                     reject(responseGenrator(resConst.BAD_REQUEST, `${req.body.name.toUpperCase()} Party Ferm is already exist in database`, null, resConst.ERROR_MSG))
                 }
                 else {
-                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>");
                     let newPartyFerm = new partyFerm({
                         name: req.body.name,
                         address: req.body.address,
