@@ -64,7 +64,7 @@ function upsertProductDetails(req, res) {
                         //     }
                         // })
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
-                        resolve(responseGenrator(resConst.OK, null, res, resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, resConst.PRODUCTS_UPDATED_SUCCESSFUL, resConst.OK_MSG))
                     })
                     .catch(err => {
                         logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
@@ -82,7 +82,7 @@ function upsertProductDetails(req, res) {
                     products.findOneAndUpdate({ _id: _id }, { $set: { name: productName, rate: productRate } }, { upsert: true, new: true })
                         .then(data => {
                             logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
-                            resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
+                            resolve(responseGenrator(resConst.OK, null, resConst.PRODUCT_UPDATED_SUCCESSFUL, resConst.OK_MSG))
                         }).catch(err => {
                             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
                             reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
@@ -127,7 +127,7 @@ function upsertPartyFerm(req, res) {
                 partyFerm.findOneAndUpdate({ _id: _id }, { $set: { name: req.body.name, address: req.body.address, gstNo: req.body.gstNo } }, { upsert: true, new: true })
                     .then(data => {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
-                        resolve(responseGenrator(resConst.OK, null, data, resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, resConst.PARTY_UPDATED_SUCCESSFUL, resConst.OK_MSG))
                     }).catch(err => {
                         logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
                         reject(responseGenrator(resConst.BAD_REQUEST, err.toString(), null, resConst.ERROR_MSG));
