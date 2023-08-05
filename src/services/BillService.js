@@ -147,7 +147,7 @@ function getAllInvoiceDetails(req, res) {
                     $group: {
                         _id: {
                             _id: "$_id",
-                            user_details: "$user_details",
+                            user_details: "user_details",
                             party_name: "$party_name",
                             address: "$address",
                             bill_no: "$bill_no",
