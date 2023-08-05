@@ -91,72 +91,143 @@ function getAllInvoiceDetails(req, res) {
     logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - getAllInvoiceDetails`);
     return new Promise(async (resolve, reject) => {
         try {
+            // let pipeline = [
+            //     {
+            //         $lookup: {
+            //             from: "billitems",
+            //             localField: "billItems",
+            //             foreignField: "_id",
+            //             as: "billItems"
+            //         }
+            //     },
+            //     {
+            //         $unwind: {
+            //             path: "$billItems",
+            //             preserveNullAndEmptyArrays: true
+            //         }
+            //     },
+            //     {
+            //         $unwind: {
+            //             path: "$billItems.billItems",
+            //             preserveNullAndEmptyArrays: true
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: "products",
+            //             localField: "billItems.billItems.productsIds",
+            //             foreignField: "_id",
+            //             as: "billItems.billItems.products"
+            //         }
+            //     },
+            //     {
+            //         $unwind: {
+            //             path: "$products",
+            //             preserveNullAndEmptyArrays: true
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: "userdatas",
+            //             localField: "user_code",
+            //             foreignField: "_id",
+            //             as: "user_details"
+            //         }
+            //     },
+            //     {
+            //         $unwind: {
+            //             path: "$user_details",
+            //             preserveNullAndEmptyArrays: true
+            //         }
+            //     },
+            //     {
+            //         $unset: "user_details.password"
+            //     },
+            //     {
+            //         $group: {
+            //             _id: {
+            //                 _id: "$_id",
+            //                 user_details: "$user_details",
+            //                 party_name: "$party_name",
+            //                 address: "$address",
+            //                 bill_no: "$bill_no",
+            //                 discount: "$discount",
+            //                 igst: "$igst",
+            //                 sgst: "$sgst",
+            //                 cgst: "$cgst",
+            //                 tds: "$tds",
+            //                 billTotalAmount: "$billTotalAmount",
+            //                 date_created: "$date_created"
+            //             },
+            //             billItems: { $push: "$billItems.billItems" }
+            //         }
+            //     }
+            // ]
+
             let pipeline = [
                 {
-                    $lookup: {
-                        from: "billitems",
-                        localField: "billItems",
-                        foreignField: "_id",
-                        as: "billItems"
+                    '$lookup': {
+                        'from': 'billitems',
+                        'localField': 'billItems',
+                        'foreignField': '_id',
+                        'as': 'billItems'
                     }
-                },
-                {
-                    $unwind: {
-                        path: "$billItems",
-                        preserveNullAndEmptyArrays: true
+                }, {
+                    '$unwind': {
+                        'path': '$billItems',
+                        'preserveNullAndEmptyArrays': true
                     }
-                },
-                {
-                    $unwind: {
-                        path: "$billItems.billItems",
-                        preserveNullAndEmptyArrays: true
+                }, {
+                    '$unwind': {
+                        'path': '$billItems.billItems',
+                        'preserveNullAndEmptyArrays': true
                     }
-                },
-                {
-                    $lookup: {
-                        from: "products",
-                        localField: "billItems.billItems.productsIds",
-                        foreignField: "_id",
-                        as: "billItems.billItems.products"
+                }, {
+                    '$lookup': {
+                        'from': 'products',
+                        'localField': 'billItems.billItems.productsIds',
+                        'foreignField': '_id',
+                        'as': 'billItems.billItems.products'
                     }
-                },
-                {
-                    $unwind: {
-                        path: "$products",
-                        preserveNullAndEmptyArrays: true
+                }, {
+                    '$unwind': {
+                        'path': '$products',
+                        'preserveNullAndEmptyArrays': true
                     }
-                },
-                {
-                    $lookup: {
-                        from: "userdatas",
-                        localField: "user_code",
-                        foreignField: "_id",
-                        as: "user_details"
+                }, {
+                    '$lookup': {
+                        'from': 'userdatas',
+                        'localField': 'user_code',
+                        'foreignField': '_id',
+                        'as': 'user_details'
                     }
-                },
-                {
-                    $unwind: {
-                        path: "$user_details",
-                        preserveNullAndEmptyArrays: true
+                }, {
+                    '$unwind': {
+                        'path': '$user_details',
+                        'preserveNullAndEmptyArrays': true
                     }
-                },
-                {
-                    $group: {
-                        _id: {
-                            _id: "$_id",
-                            user_details: "$user_details",
-                            party_name: "$party_name",
-                            address: "$address",
-                            bill_no: "$bill_no",
-                            discount: "$discount",
-                            igst: "$igst",
-                            sgst: "$sgst",
-                            cgst: "$cgst",
-                            tds: "$tds",
-                            billTotalAmount: "$billTotalAmount",
-                            date_created: "$date_created"
+                }, {
+                    '$unset': 'user_details.password'
+                }, {
+                    '$group': {
+                        '_id': {
+                            '_id': '$_id',
+                            'user_details': '$user_details',
+                            'user_code': '$user_code',
+                            'party_name': '$party_name',
+                            'address': '$address',
+                            'bill_no': '$bill_no',
+                            'discount': '$discount',
+                            'gst': '$gst',
+                            'sgst': '$sgst',
+                            'cgst': '$cgst',
+                            'tds': '$tds',
+                            'billTotalAmount': '$billTotalAmount',
+                            'date_created': '$date_created'
                         },
-                        billItems: { $push: "$billItems.billItems" }
+                        'billItems': {
+                            '$push': '$billItems.billItems'
+                        }
                     }
                 }
             ]
