@@ -35,7 +35,7 @@ function saveNewInvoice(req, res) {
             }
             else {
                 logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - saveNewInvoice`);
-                reject(responseGenrator(resConst.BAD_REQUEST, 'Error Occure While Adding Invoice', null, resConst.ERROR_MSG))
+                reject(responseGenrator(resConst.BAD_REQUEST, resConst.ERROR_OCCURE_WHILE_ADDING_INVOICE, null, resConst.ERROR_MSG))
             }
         })
             .then(async (billItems) => {
@@ -49,7 +49,7 @@ function saveNewInvoice(req, res) {
                 }
                 else {
                     logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - saveNewInvoice`);
-                    reject(responseGenrator(resConst.BAD_REQUEST, 'Bill Item Not Found', null, resConst.ERROR_MSG))
+                    reject(responseGenrator(resConst.BAD_REQUEST, resConst.BILL_NOT_FOUND, null, resConst.ERROR_MSG))
                 }
             })
             .then(async (billItemId) => {
@@ -77,7 +77,7 @@ function saveNewInvoice(req, res) {
                 }
                 else {
                     logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - saveNewInvoice`);
-                    reject(responseGenrator(resConst.BAD_REQUEST, 'Invoice not saved', null, resConst.ERROR_MSG))
+                    reject(responseGenrator(resConst.BAD_REQUEST, resConst.INVOICE_IS_NOT_SAVED, null, resConst.ERROR_MSG))
                 }
             })
             .catch(err => {
@@ -127,9 +127,27 @@ function getAllInvoiceDetails(req, res) {
                     }
                 },
                 {
+                    $lookup: {
+                        from: "userdatas",
+                        localField: "user_code",
+                        foreignField: "_id",
+                        as: "user_name"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$user_name",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $unset: "user_details.password"
+                },
+                {
                     $group: {
                         _id: {
                             _id: "$_id",
+                            user_details: "$user_name",
                             party_name: "$party_name",
                             address: "$address",
                             bill_no: "$bill_no",

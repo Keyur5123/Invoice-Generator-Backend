@@ -41,10 +41,10 @@ function updateUserDetials(req, res) {
                     .then(data => {
                         if (data) {
                             logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
-                            resolve(responseGenrator(resConst.OK, null, 'User details updated', resConst.SUCCESS_MSG));
+                            resolve(responseGenrator(resConst.OK, null, resConst.USER_DETAILS_UPDATED, resConst.SUCCESS_MSG));
                         } else {
                             logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
-                            resolve(responseGenrator(resConst.OK, null, 'User not found', resConst.SUCCESS_MSG));
+                            resolve(responseGenrator(resConst.OK, null, resConst.USER_NOT_FOUND, resConst.SUCCESS_MSG));
                         }
                     })
                     .catch(err => {
@@ -54,7 +54,7 @@ function updateUserDetials(req, res) {
             }
             else {
                 logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
-                resolve(responseGenrator(resConst.OK, null, 'Unauthorized admin', resConst.SUCCESS_MSG));
+                resolve(responseGenrator(resConst.OK, null, resConst.ADMIN_UNAUTHORIZED, resConst.SUCCESS_MSG));
             }
         } catch (error) {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
@@ -72,11 +72,11 @@ function deleteUserDetials(req, res) {
                 .then(data => {
                     if (data) {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
-                        resolve(responseGenrator(resConst.OK, null, 'User deleted successfully', resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, resConst.USER_DELETED_SUCCESSFULLY, resConst.OK_MSG))
                     }
                     else {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
-                        resolve(responseGenrator(resConst.OK, null, 'User not found', resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, resConst.USER_NOT_FOUND, resConst.OK_MSG))
                     }
                 });
         } catch (error) {

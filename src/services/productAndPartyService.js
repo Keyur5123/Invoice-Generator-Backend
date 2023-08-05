@@ -90,7 +90,7 @@ function upsertProductDetails(req, res) {
                 }
                 else if (isProductExist.length > 0) {
                     logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
-                    reject(responseGenrator(resConst.BAD_REQUEST, `${productName.toUpperCase()} Product is already exist in database`, null, resConst.ERROR_MSG))
+                    reject(responseGenrator(resConst.BAD_REQUEST, `${productName.toUpperCase()} Product ${EXIST_IN_DATABASE}`, null, resConst.ERROR_MSG))
                 }
                 else {
                     let newProduct = new products({
@@ -136,7 +136,7 @@ function upsertPartyFerm(req, res) {
 
                 if (isPartyFermExist.length > 0) {
                     logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - upsertPartyFerm`);
-                    reject(responseGenrator(resConst.BAD_REQUEST, `${req.body.name.toUpperCase()} Party Ferm is already exist in database`, null, resConst.ERROR_MSG))
+                    reject(responseGenrator(resConst.BAD_REQUEST, `${req.body.name.toUpperCase()} Party Ferm ${EXIST_IN_DATABASE}`, null, resConst.ERROR_MSG))
                 }
                 else {
                     let newPartyFerm = new partyFerm({
@@ -171,11 +171,11 @@ function deleteProduct(req, res) {
                 .then(data => {
                     if (data) {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
-                        resolve(responseGenrator(resConst.OK, null, 'Product deleted successfully', resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, resConst.PRODUCT_DELETED_SUCCESSFUL, resConst.OK_MSG))
                     }
                     else {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
-                        resolve(responseGenrator(resConst.OK, null, 'Product not found', resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, resConst.PRODUCT_NOT_FOUND, resConst.OK_MSG))
                     }
                 });
         } catch (error) {
@@ -194,11 +194,11 @@ function deletePartyFerm(req, res) {
                 .then(data => {
                     if (data) {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deletePartyFerm`);
-                        resolve(responseGenrator(resConst.OK, null, 'Party deleted successfully', resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, resConst.PARTY_DELETED_SUCCESSFUL, resConst.OK_MSG))
                     }
                     else {
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deletePartyFerm`);
-                        resolve(responseGenrator(resConst.OK, null, 'Party not found', resConst.OK_MSG))
+                        resolve(responseGenrator(resConst.OK, null, resConst.PARTY_NOT_FOUND, resConst.OK_MSG))
                     }
                 });
         } catch (error) {
