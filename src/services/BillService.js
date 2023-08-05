@@ -131,23 +131,23 @@ function getAllInvoiceDetails(req, res) {
                         from: "userdatas",
                         localField: "user_code",
                         foreignField: "_id",
-                        as: "user_name"
+                        as: "user_details"
                     }
                 },
                 {
                     $unwind: {
-                        path: "$user_name",
+                        path: "$user_details",
                         preserveNullAndEmptyArrays: true
                     }
                 },
-                // {
-                //     $unset: "user_details.password"
-                // },
+                {
+                    $unset: "user_details.password"
+                },
                 {
                     $group: {
                         _id: {
                             _id: "$_id",
-                            user_details: "$user_name",
+                            user_details: "$user_details",
                             party_name: "$party_name",
                             address: "$address",
                             bill_no: "$bill_no",
