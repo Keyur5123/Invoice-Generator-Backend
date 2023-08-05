@@ -140,9 +140,9 @@ function getAllInvoiceDetails(req, res) {
                         preserveNullAndEmptyArrays: true
                     }
                 },
-                {
-                    $unset: "user_details.password"
-                },
+                // {
+                //     $unset: "user_details.password"
+                // },
                 {
                     $group: {
                         _id: {
