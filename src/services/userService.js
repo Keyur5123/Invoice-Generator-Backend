@@ -5,7 +5,7 @@ const { responseGenrator, resConst, logger } = require('../utilities/utility-fun
 
 module.exports = {
     getAllUsers: getAllUsers,
-    updateUserRole: updateUserRole,
+    updateUserDetials: updateUserDetials,
 }
 
 function getAllUsers(req, res) {
@@ -29,34 +29,34 @@ function getAllUsers(req, res) {
     })
 }
 
-function updateUserRole(req, res) {
-    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - updateUserRole`);
+function updateUserDetials(req, res) {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
 
     return new Promise(async (resolve, reject) => {
         try {
             let is_admin = await userData.findOne({ _id: req.params.admin_code })
             if (is_admin) {
-                await userData.findOneAndUpdate({ _id: req.params.user_code }, { roleId: req.params.role_id }, { new: true })
+                await userData.findOneAndUpdate({ _id: req.body._id }, { $set: { user_name: req.body.user_name, email: req.body.email, roleId: req.body.roleId } }, { new: true })
                     .then(data => {
                         if (data) {
-                            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserRole`);
+                            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
                             resolve(responseGenrator(resConst.OK, null, 'User details updated', resConst.SUCCESS_MSG));
                         } else {
-                            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserRole`);
+                            logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
                             resolve(responseGenrator(resConst.OK, null, 'User not found', resConst.SUCCESS_MSG));
                         }
                     })
                     .catch(err => {
-                        logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - updateUserRole`);
+                        logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
                         reject(responseGenrator(resConst.SERVER_ERROR, err.toString(), null, resConst.ERROR_MSG));
                     });
             }
             else {
-                logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserRole`);
+                logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
                 resolve(responseGenrator(resConst.OK, null, 'Unauthorized admin', resConst.SUCCESS_MSG));
             }
         } catch (error) {
-            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - updateUserRole`);
+            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
             reject(responseGenrator(resConst.SERVER_ERROR, error.toString(), null, resConst.ERROR_MSG));
         }
     })
