@@ -6,6 +6,7 @@ const { responseGenrator, resConst, logger } = require('../utilities/utility-fun
 module.exports = {
     getAllUsers: getAllUsers,
     updateUserDetials: updateUserDetials,
+    deleteUserDetials: deleteUserDetials,
 }
 
 function getAllUsers(req, res) {
@@ -57,6 +58,29 @@ function updateUserDetials(req, res) {
             }
         } catch (error) {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - updateUserDetials`);
+            reject(responseGenrator(resConst.SERVER_ERROR, error.toString(), null, resConst.ERROR_MSG));
+        }
+    })
+}
+
+function deleteUserDetials(req, res) {
+    logger.info(`${resConst.ENTRY_LEVEL_LOG} - ${resConst.SERVICE} - deleteUserDetials`);
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            await userData.findOneAndRemove({ _id: req.params.user_code })
+                .then(data => {
+                    if (data) {
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
+                        resolve(responseGenrator(resConst.OK, null, 'User deleted successfully', resConst.OK_MSG))
+                    }
+                    else {
+                        logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - deleteProduct`);
+                        resolve(responseGenrator(resConst.OK, null, 'User not found', resConst.OK_MSG))
+                    }
+                });
+        } catch (error) {
+            logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - deleteUserDetials`);
             reject(responseGenrator(resConst.SERVER_ERROR, error.toString(), null, resConst.ERROR_MSG));
         }
     })
