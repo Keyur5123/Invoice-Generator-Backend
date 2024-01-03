@@ -37,7 +37,7 @@ function getAllPartyFermAndProductsList() {
 
         } catch (error) {
             logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - getAllPartyFermAndProductsList`);
-            reject(responseGenrator(resConst.BAD_REQUEST, error.toString(), null, resConst.ERROR_MSG));
+            reject(responseGenrator(resConst.BAD_REQUEST, error.toString() ?? error, null, resConst.ERROR_MSG));
         }
     })
 }
@@ -53,16 +53,6 @@ function upsertProductDetails(req, res) {
                     return await products.updateMany({ name: product.name }, { $set: { rate: product.rate } }, { upsert: true, new: true })
                 }))
                     .then(res => {
-                        // let newAddedProducts = [];
-                        // let nonUpdatedProducts = [];
-                        // res.forEach(product => {
-                        //     if (product.matchedCount == 1 && product.upsertedId == null) {
-                        //         nonUpdatedProducts.push(product);
-                        //     }
-                        //     else if (product.matchedCount == 0 && product.upsertedId != null) {
-                        //         newAddedProducts.push(product);
-                        //     }
-                        // })
                         logger.info(`${resConst.SUCCESS_LEVEL_LOG} - ${resConst.SERVICE} - upsertProductDetails`);
                         resolve(responseGenrator(resConst.OK, null, resConst.PRODUCTS_UPDATED_SUCCESSFUL, resConst.OK_MSG))
                     })

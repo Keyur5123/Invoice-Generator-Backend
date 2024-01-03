@@ -82,7 +82,6 @@ function loginUser(req, res) {
                 }
             })
             .catch((err) => {
-                console.log("err ",err);
                 logger.error(`${resConst.ERROR_LEVEL_LOG} - ${resConst.SERVICE} - loginUser`);  
                 reject(responseGenrator(resConst.SERVER_ERROR, resConst.SERVER_ERROR_MSG, null, resConst.ERROR_MSG));
             });

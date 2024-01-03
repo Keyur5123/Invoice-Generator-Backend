@@ -13,6 +13,10 @@ const newInvoiceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    paymentEntryStatus: {
+        type: String,
+        required: true
+    },
     billItems: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -42,6 +46,15 @@ const newInvoiceSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 0
+    },
+    is_paid: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    billSubTotalAmount: {
+        type: Number,
+        required: true,
     },
     billTotalAmount: {
         type: Number,
